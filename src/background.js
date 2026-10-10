@@ -29,6 +29,43 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return true;
 });
 
+/**
+ * Sends a request from a D&D Beyond page to DDB Importer in a connected Foundry tab. Tabs whose
+ * module does not acknowledge it (no world open, an older module) are skipped; the first success
+ * wins, otherwise the first failure message is returned.
+ */
+async function sendToFoundry(request, payload) {
+  const sites = await globalThis.DDBIFoundrySites.connectedSites(chrome.scripting);
+  if (!sites.length) {
+    return { success: false, message: "Connect your Foundry site in the DDBI Utilities popup first." };
+  }
+  const tabs = await chrome.tabs.query({ url: sites });
+  if (!tabs.length) return { success: false, message: "Open your connected Foundry world in a tab first." };
+  const failures = [];
+  for (const tab of tabs) {
+    const result = await chrome.tabs.sendMessage(tab.id, { type: "extension-request", request, payload }).catch(() => null);
+    if (!result) continue;
+    if (result.success) return result;
+    failures.push(result.message);
+  }
+  return {
+    success: false,
+    message: failures[0] ?? "DDB Importer did not answer. Is your world open with DDB Importer enabled?",
+  };
+}
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message?.type !== "monster-biography") return false;
+  if (sender.id !== chrome.runtime.id || !/^https:\/\/www\.dndbeyond\.com\/monsters\//.test(sender.tab?.url ?? "")) {
+    sendResponse({ success: false, message: "Not a D&D Beyond monster page." });
+    return false;
+  }
+  sendToFoundry("monster-biography", message.payload)
+    .then(sendResponse)
+    .catch((error) => sendResponse({ success: false, message: String(error?.message ?? error) }));
+  return true;
+});
+
 chrome.cookies.onChanged.addListener(({ cookie }) => {
   if (cookie.name !== COOKIE.name || !/(^|\.)dndbeyond\.com$/.test(cookie.domain.replace(/^\./, ""))) return;
   clearTimeout(changeTimer);

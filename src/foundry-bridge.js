@@ -31,8 +31,53 @@
     }
   });
 
-  chrome.runtime.onMessage.addListener((message) => {
-    if (message?.type === "cobalt-changed") post("ddbi-cobalt-changed");
+  // requests from D&D Beyond pages, routed here by the background worker
+  const ACK_TIMEOUT_MS = 3000;
+  const RESULT_TIMEOUT_MS = 10 * 60 * 1000;
+  const requests = new Map();
+  let nextRequestId = 1;
+
+  window.addEventListener("message", (event) => {
+    if (event.source !== window || event.origin !== window.location.origin) return;
+    const data = event.data;
+    if (!data || typeof data !== "object" || data.source !== PAGE_SOURCE) return;
+    const request = requests.get(data.requestId);
+    if (!request) return;
+    if (data.type === "ddbi-request-ack") {
+      clearTimeout(request.timer);
+      request.timer = setTimeout(() => request.finish({ success: false, message: "DDB Importer did not finish in time." }), RESULT_TIMEOUT_MS);
+    } else if (data.type === "ddbi-request-result") {
+      request.finish({ success: Boolean(data.success), message: String(data.message ?? "") });
+    }
+  });
+
+  function relayRequest(request, payload) {
+    return new Promise((resolve) => {
+      const requestId = `ext-${nextRequestId++}`;
+      const entry = {
+        // no acknowledgement means no module here to handle it: answer null so other tabs are tried
+        timer: setTimeout(() => entry.finish(null), ACK_TIMEOUT_MS),
+        finish: (result) => {
+          clearTimeout(entry.timer);
+          requests.delete(requestId);
+          resolve(result);
+        },
+      };
+      requests.set(requestId, entry);
+      post("ddbi-request", { requestId, request, payload });
+    });
+  }
+
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (message?.type === "cobalt-changed") {
+      post("ddbi-cobalt-changed");
+      return false;
+    }
+    if (message?.type === "extension-request") {
+      relayRequest(message.request, message.payload).then(sendResponse);
+      return true;
+    }
+    return false;
   });
 
   // the module may have said hello before this script loaded

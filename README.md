@@ -25,6 +25,16 @@ The cookie goes from the extension to the Foundry page in your browser and nowhe
 is involved. The extension sends it only when DDB Importer asks, and only to a connected site; a
 login change is announced without it.
 
+### Send a monster's biography to DDB Importer
+
+Some D&D Beyond monsters, many 2024 Monster Manual entries among them, have no biography or lair
+text in the data DDB Importer imports, although their page shows it. On a monster page with a
+biography, a **Send biography to DDB Importer** button appears above it. Pressing it sends the
+biography to DDB Importer in your connected Foundry tab (the world must be open as a GM), which
+imports that monster into your monster compendium, or updates it in place if it is already there,
+with the biography and the lair section parsed into lair features. The result is shown next to the
+button.
+
 ### Copy Cobalt cookie
 
 Click the extension's toolbar button, then "Copy Cobalt Cookie", to copy your D&D Beyond
@@ -73,7 +83,7 @@ Limits:
 - `clipboardWrite`: put the cookie on the clipboard for the copy button.
 - `scripting`, `activeTab` and optional access to other sites: connect a Foundry site. Access is
   requested per site when you press Connect, never up front.
-- The sheet refresh content script needs no permissions of its own.
+- The sheet refresh and monster page content scripts need no permissions of their own.
 
 ## Install (unpacked)
 
@@ -91,7 +101,10 @@ Content-script features live in `src/` (one script per feature, listed in `manif
 toolbar popup lives in `src/popup/`. Login sharing is `src/background.js` (cookie access, gated on
 connected sites), `src/foundry-bridge.js` (registered per connected site, relays
 `window.postMessage` traffic with the module) and `src/foundry-sites.js` (shared helpers); the
-module side is `src/lib/CobaltExtension.ts` in ddb-importer. Tests are in `test/<feature>.test.js`. Pushing to `main`
+module side is `src/lib/UtilitiesExtension.ts` in ddb-importer. Monster biographies go from
+`src/monster-biography.js` through the background worker and the bridge as an `extension-request`
+(the module acknowledges within 3 seconds, then answers with the result); the module side is
+`src/muncher/MonsterBiography.ts`. Tests are in `test/<feature>.test.js`. Pushing to `main`
 runs the tests and publishes a release zip tagged with the `manifest.json` version.
 
 ```bash
