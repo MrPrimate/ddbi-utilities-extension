@@ -46,15 +46,6 @@
       ],
       "run_at": "document_start",
       "world": "MAIN"
-    },
-    {
-      "matches": [
-        "https://www.dndbeyond.com/monsters/*"
-      ],
-      "js": [
-        "src/monster-biography.js"
-      ],
-      "run_at": "document_idle"
     }
   ]
 }

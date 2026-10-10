@@ -25,15 +25,21 @@ The cookie goes from the extension to the Foundry page in your browser and nowhe
 is involved. The extension sends it only when DDB Importer asks, and only to a connected site; a
 login change is announced without it.
 
-### Send a monster's biography to DDB Importer
+### Import a monster from its D&D Beyond page
 
-Some D&D Beyond monsters, many 2024 Monster Manual entries among them, have no biography or lair
-text in the data DDB Importer imports, although their page shows it. On a monster page with a
-biography, a **Send biography to DDB Importer** button appears above it. Pressing it sends the
-biography to DDB Importer in your connected Foundry tab (the world must be open as a GM), which
-imports that monster into your monster compendium, or updates it in place if it is already there,
-with the biography and the lair section parsed into lair features. The result is shown next to the
-button.
+Open the extension's toolbar popup on a D&D Beyond monster page. With your Foundry world open as a
+GM in a connected tab:
+
+- **Import/reimport <monster>** imports the monster into DDB Importer's monster compendium, or
+  reimports it if it is already there.
+- **Send biography** (only on pages with a biography) reimports it with the page's biography and
+  lair text, replacing D&D Beyond's.
+
+Some monsters, many 2024 Monster Manual entries among them, have no biography or lair text in the
+data DDB Importer imports, although their page shows it. Import/reimport adds the page's text
+wherever D&D Beyond's data has none. Either way the lair section is parsed into lair features. The
+result is shown in the popup; if you close the popup first, the import still finishes and Foundry
+shows the outcome.
 
 ### Copy Cobalt cookie
 
@@ -83,7 +89,9 @@ Limits:
 - `clipboardWrite`: put the cookie on the clipboard for the copy button.
 - `scripting`, `activeTab` and optional access to other sites: connect a Foundry site. Access is
   requested per site when you press Connect, never up front.
-- The sheet refresh and monster page content scripts need no permissions of their own.
+- The popup reads the monster and its biography from the open monster page with `scripting`,
+  under the dndbeyond.com access above.
+- The sheet refresh content script needs no permissions of its own.
 
 ## Install (unpacked)
 
@@ -101,10 +109,11 @@ Content-script features live in `src/` (one script per feature, listed in `manif
 toolbar popup lives in `src/popup/`. Login sharing is `src/background.js` (cookie access, gated on
 connected sites), `src/foundry-bridge.js` (registered per connected site, relays
 `window.postMessage` traffic with the module) and `src/foundry-sites.js` (shared helpers); the
-module side is `src/lib/UtilitiesExtension.ts` in ddb-importer. Monster biographies go from
-`src/monster-biography.js` through the background worker and the bridge as an `extension-request`
-(the module acknowledges within 3 seconds, then answers with the result); the module side is
-`src/muncher/MonsterBiography.ts`. Tests are in `test/<feature>.test.js`. Pushing to `main`
+module side is `src/lib/UtilitiesExtension.ts` in ddb-importer. Monster imports go from the popup
+(`src/popup/monster.js`, which reads the page with `scripting.executeScript`) through the
+background worker and the bridge as an `extension-request` named `monster-import` (the module
+acknowledges within 3 seconds, then answers with the result); the module side is
+`src/muncher/MonsterPageImport.ts`. Tests are in `test/<feature>.test.js`. Pushing to `main`
 runs the tests and publishes a release zip tagged with the `manifest.json` version.
 
 ```bash

@@ -55,12 +55,13 @@ async function sendToFoundry(request, payload) {
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message?.type !== "monster-biography") return false;
-  if (sender.id !== chrome.runtime.id || !/^https:\/\/www\.dndbeyond\.com\/monsters\//.test(sender.tab?.url ?? "")) {
-    sendResponse({ success: false, message: "Not a D&D Beyond monster page." });
+  if (message?.type !== "monster-import") return false;
+  // only the extension's own popup sends this; content scripts in web pages have a sender.tab
+  if (sender.id !== chrome.runtime.id || sender.tab) {
+    sendResponse({ success: false, message: "Not sent from the extension popup." });
     return false;
   }
-  sendToFoundry("monster-biography", message.payload)
+  sendToFoundry("monster-import", message.payload)
     .then(sendResponse)
     .catch((error) => sendResponse({ success: false, message: String(error?.message ?? error) }));
   return true;
