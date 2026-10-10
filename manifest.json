@@ -24,11 +24,7 @@
     "https://*/*"
   ],
   "background": {
-    "service_worker": "src/background.js",
-    "scripts": [
-      "src/foundry-sites.js",
-      "src/background.js"
-    ]
+    "service_worker": "src/background.js"
   },
   "action": {
     "default_popup": "src/popup/popup.html",
@@ -51,11 +47,5 @@
       "run_at": "document_start",
       "world": "MAIN"
     }
-  ],
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "ddbi-utilities-extension@mrprimate.co.uk",
-      "strict_min_version": "128.0"
-    }
-  }
+  ]
 }

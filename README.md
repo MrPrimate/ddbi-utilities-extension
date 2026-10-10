@@ -77,11 +77,13 @@ Limits:
 
 ## Install (unpacked)
 
-Download `ddbi-utilities-extension.zip` from the releases page and unzip it, or use a checkout.
+Download the zip for your browser from the releases page and unzip it.
 
-- Chrome / Edge: `chrome://extensions`, enable Developer mode, "Load unpacked", pick this folder.
-- Firefox 128+: `about:debugging#/runtime/this-firefox`, "Load Temporary Add-on", pick
-  `manifest.json`.
+- Chrome / Edge: `ddbi-utilities-extension-chrome.zip`. `chrome://extensions`, enable Developer
+  mode, "Load unpacked", pick the unzipped folder (a checkout of this repo works too).
+- Firefox 128+: `ddbi-utilities-extension-firefox.zip`. `about:debugging#/runtime/this-firefox`,
+  "Load Temporary Add-on", pick its `manifest.json`. From a checkout, run `npm run build` and use
+  `dist/firefox/manifest.json`.
 
 ## Development
 
@@ -93,8 +95,13 @@ module side is `src/lib/CobaltExtension.ts` in ddb-importer. Tests are in `test/
 runs the tests and publishes a release zip tagged with the `manifest.json` version.
 
 ```bash
-npm test   # node:test unit tests
+npm test        # node:test unit tests
+npm run build   # dist/chrome and dist/firefox
 ```
+
+`manifest.json` is the Chrome/Edge manifest. The Firefox build swaps the background service worker
+for event-page scripts (Firefox has no extension service workers, and Chrome rejects
+`background.scripts` in Manifest V3) and adds the gecko id; see `tools/build.mjs`.
 
 A feature script exports its pure helpers when loaded by Node (for the tests) and runs normally in
 the browser.

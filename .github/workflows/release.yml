@@ -23,12 +23,15 @@ jobs:
         id: version
         run: echo "version=$(node -p "require('./manifest.json').version")" >> "$GITHUB_OUTPUT"
       - name: Package
-        run: zip -r ddbi-utilities-extension.zip manifest.json src icons LICENSE README.md
+        run: |
+          npm run build
+          (cd dist/chrome && zip -r ../../ddbi-utilities-extension-chrome.zip .)
+          (cd dist/firefox && zip -r ../../ddbi-utilities-extension-firefox.zip .)
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: false
           name: Release ${{ steps.version.outputs.version }}
           tag: ${{ steps.version.outputs.version }}
-          artifacts: ddbi-utilities-extension.zip
+          artifacts: ddbi-utilities-extension-chrome.zip,ddbi-utilities-extension-firefox.zip
           token: ${{ secrets.GITHUB_TOKEN }}

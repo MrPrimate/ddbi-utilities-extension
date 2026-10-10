@@ -4,7 +4,8 @@
   "private": true,
   "description": "DDBI Utilities Extension: browser helpers for D&D Beyond alongside DDB Importer.",
   "scripts": {
-    "test": "node --test \"test/**/*.test.js\""
+    "test": "node --test \"test/**/*.test.js\"",
+    "build": "node tools/build.mjs"
   },
   "license": "MIT"
 }
