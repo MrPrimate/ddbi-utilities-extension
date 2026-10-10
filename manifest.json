@@ -1,0 +1,61 @@
+{
+  "manifest_version": 3,
+  "name": "DDBI Utilities Extension",
+  "version": "0.1.0",
+  "description": "Browser helpers for D&D Beyond alongside DDB Importer: hand your D&D Beyond login to DDB Importer in Foundry, copy your Cobalt cookie, and refresh open character sheets when the character is changed elsewhere.",
+  "icons": {
+    "32": "icons/icon-32x32.png",
+    "38": "icons/icon-38x38.png",
+    "64": "icons/icon-64x64.png",
+    "128": "icons/icon-128x128.png"
+  },
+  "permissions": [
+    "cookies",
+    "clipboardWrite",
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://dndbeyond.com/*",
+    "https://*.dndbeyond.com/*"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js",
+    "scripts": [
+      "src/foundry-sites.js",
+      "src/background.js"
+    ]
+  },
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "32": "icons/icon-32x32.png",
+      "38": "icons/icon-38x38.png",
+      "64": "icons/icon-64x64.png",
+      "128": "icons/icon-128x128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.dndbeyond.com/characters/*",
+        "https://www.dndbeyond.com/profile/*/characters/*"
+      ],
+      "js": [
+        "src/sheet-refresh.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ddbi-utilities-extension@mrprimate.co.uk",
+      "strict_min_version": "128.0"
+    }
+  }
+}

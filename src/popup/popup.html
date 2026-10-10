@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>DDBI Utilities</title>
+    <style>
+      body {
+        width: 240px;
+        margin: 0;
+        padding: 12px;
+        font: 13px/1.4 system-ui, sans-serif;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 14px;
+      }
+      button {
+        width: 100%;
+        height: 32px;
+        cursor: pointer;
+      }
+      #status {
+        margin: 8px 0 0;
+        min-height: 1.4em;
+      }
+      #status[data-kind="ok"] {
+        color: #1a7f37;
+      }
+      #status[data-kind="error"],
+      #foundry-status[data-kind="error"] {
+        color: #b42318;
+      }
+      #foundry-status[data-kind="ok"] {
+        color: #1a7f37;
+      }
+      h2 {
+        margin: 12px 0 6px;
+        font-size: 13px;
+      }
+      #connected-sites {
+        margin: 6px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      #connected-sites li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        margin-top: 4px;
+        word-break: break-all;
+      }
+      #connected-sites button {
+        width: auto;
+        height: 24px;
+        flex: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>DDBI Utilities</h1>
+    <button id="copy-cobalt" type="button">Copy Cobalt Cookie</button>
+    <p id="status" role="status"></p>
+    <section id="foundry" hidden>
+      <h2>Foundry sites</h2>
+      <p id="foundry-current"></p>
+      <button id="connect-site" type="button" hidden>Connect this Foundry</button>
+      <p id="foundry-status" role="status"></p>
+      <ul id="connected-sites"></ul>
+    </section>
+    <script src="cobalt.js"></script>
+    <script src="../foundry-sites.js"></script>
+    <script src="connect.js"></script>
+  </body>
+</html>
