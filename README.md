@@ -28,25 +28,36 @@ The cookie goes from the extension to the Foundry page in your browser and nowhe
 is involved. The extension sends it only when DDB Importer asks, and only to a connected site; a
 login change is announced without it.
 
-### Import from a D&D Beyond page
+### Add to Foundry from a D&D Beyond page
 
 Open the extension's toolbar popup on a D&D Beyond monster, spell, feat, species, equipment, magic
-item, background or class page. With your Foundry world open as a GM in a connected tab, press
-**Import/reimport <name>** to import that entry into DDB Importer's compendiums, or reimport it if it
-is already there. The id comes from the page URL.
+item, background or class page, or on a book (its index page or any chapter of it). With your
+Foundry world open as a GM in a connected tab, press **Add <name> to Foundry** to add that entry to
+DDB Importer's compendiums, or update it if it is already there. The id comes from the page URL.
 
-- Feats, backgrounds, species and classes are imported through the Muncher's mule character, so set
-  its URL in the Muncher first. A class import brings the class and the subclasses D&D Beyond offers
-  from its book, and takes a few minutes: the popup only confirms it started, and Foundry shows when
-  it is done.
+The button is enabled once DDB Importer in the connected Foundry tab confirms it can add the entry:
+you are the GM and it has a Cobalt cookie, monsters need a linked Patreon key, feats, backgrounds,
+species and classes need the Patreon tier for the Muncher's character options and a mule character,
+and books must be owned on your D&D Beyond account. Otherwise the popup says what is missing.
+
+- Feats, backgrounds, species and classes go through the Muncher's mule character, so set its URL in
+  the Muncher first.
+- Classes: the button first lists the subclasses D&D Beyond offers for the class on your account,
+  with their source books. Untick books to narrow the list, choose the subclasses (all or none
+  shortcuts), and add the class with them. Homebrew subclasses are not listed; use the Muncher for
+  those.
+- Books: DDB Importer's adventure import runs in Foundry with its adventure browser open, using your
+  adventure import settings. It may ask questions there, such as which scenes to add or whether to
+  detect scene grids.
 - Monsters: some, many 2024 Monster Manual entries among them, have no biography or lair text in the
-  data DDB Importer imports, although their page shows it. Import/reimport adds the page's text
-  wherever D&D Beyond's data has none; **Send biography** (only on pages with a biography)
-  reimports it with the page's biography and lair text, replacing D&D Beyond's. Either way the lair
+  data DDB Importer imports, although their page shows it. Adding a monster fills in the page's text
+  wherever D&D Beyond's data has none; **Send biography** (only on pages with a biography) adds or
+  updates it with the page's biography and lair text, replacing D&D Beyond's. Either way the lair
   section is parsed into lair features.
 
-The result is shown in the popup; if you close the popup first, the import still finishes and
-Foundry shows the outcome.
+Classes and books take a few minutes: the popup only confirms they started, and Foundry shows when
+they are done. Other results are shown in the popup; if you close the popup first, the import still
+finishes and Foundry shows the outcome.
 
 ### Copy Cobalt cookie
 
@@ -99,7 +110,8 @@ Limits:
 - `scripting`, `activeTab` and optional access to other sites: connect a Foundry site. Access is
   requested per site when you press Connect, never up front.
 - The popup reads the entry's name (and a monster's biography) from the open D&D Beyond page with
-  `scripting`, under the dndbeyond.com access above.
+  `scripting`, under the dndbeyond.com access above. Book pages are recognised from their address
+  alone.
 - The sheet refresh content script needs no permissions of its own.
 
 ## Install (unpacked)
@@ -122,7 +134,7 @@ module side is `src/lib/UtilitiesExtension.ts` in ddb-importer. Page imports go 
 (`src/popup/page-import.js`, which reads the page with `scripting.executeScript`) through the
 background worker and the bridge as an `extension-request` named `ddb-import` (the module
 acknowledges within 3 seconds, then answers with the result; class imports return on the
-acknowledgement); the module side is `src/muncher/PageImport.ts`. Tests are in `test/<feature>.test.js`. Pushing to `main`
+acknowledgement, as do book imports); the module side is `src/muncher/PageImport.ts`. Tests are in `test/<feature>.test.js`. Pushing to `main`
 runs the tests and publishes a release zip tagged with the `manifest.json` version.
 
 ```bash

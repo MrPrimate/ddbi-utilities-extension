@@ -22,7 +22,7 @@ test("pageEntryFromPath maps each importable page type and its URL id", () => {
 });
 
 test("pageEntryFromPath ignores pages that are not single entries", () => {
-  for (const path of ["/spells", "/monsters?filter-search=dragon", "/characters/172173081", "/classes/barbarian", "/campaigns/8176796", "/sources/dnd/phb-2024"]) {
+  for (const path of ["/spells", "/monsters?filter-search=dragon", "/characters/172173081", "/classes/barbarian", "/campaigns/8176796", "/sources", "/sources/dnd"]) {
     assert.equal(core.pageEntryFromPath(path), null, path);
   }
 });
@@ -58,4 +58,22 @@ test("readPage leaves the biography empty when the block has no text", () => {
     ".mon-details__description-block-content": { textContent: "  ", innerHTML: " " },
   }, core.readPage);
   assert.equal(result.html, "");
+});
+
+test("subclassesForSources keeps subclasses with at least one ticked book", () => {
+  const subclasses = [
+    { id: 1, name: "Path of Spoons", sourceIds: [10] },
+    { id: 2, name: "Path of Forks", sourceIds: [11] },
+    { id: 3, name: "Path of Ladles", sourceIds: [10, 12] },
+  ];
+  assert.deepEqual(core.subclassesForSources(subclasses, new Set([10])).map((s) => s.id), [1, 3]);
+  assert.deepEqual(core.subclassesForSources(subclasses, new Set([12])).map((s) => s.id), [3]);
+  assert.deepEqual(core.subclassesForSources(subclasses, new Set()).map((s) => s.id), []);
+});
+
+test("pageEntryFromPath maps a book's index and chapter pages to the book", () => {
+  for (const path of ["/sources/dnd/au", "/sources/dnd/au/", "/sources/dnd/au/chapter-5-magic-items"]) {
+    assert.deepEqual(core.pageEntryFromPath(path), { type: "adventure", label: "book", path: "sources/dnd/au" }, path);
+  }
+  assert.equal(core.pageEntryFromPath("/sources/partners/some-book/chapter-1")?.path, "sources/partners/some-book");
 });

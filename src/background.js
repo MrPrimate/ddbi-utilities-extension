@@ -55,16 +55,20 @@ async function sendToFoundry(request, payload, detach = false) {
   };
 }
 
+// requests the popup may send on to DDB Importer in a connected Foundry tab
+const POPUP_REQUESTS = new Set(["ddb-import", "ddb-import-status", "ddb-class-subclasses"]);
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message?.type !== "ddb-import") return false;
+  if (!POPUP_REQUESTS.has(message?.type)) return false;
   // only the extension's own popup sends this; content scripts in web pages have a sender.tab
   if (sender.id !== chrome.runtime.id || sender.tab) {
     sendResponse({ success: false, message: "Not sent from the extension popup." });
     return false;
   }
-  // a class import runs for minutes, longer than this worker may stay alive waiting for it, so
-  // only wait for DDB Importer to accept it; Foundry reports the outcome
-  sendToFoundry("ddb-import", message.payload, message.payload?.type === "class")
+  // class and book imports run for minutes, longer than this worker may stay alive waiting for
+  // them, so only wait for DDB Importer to accept them; Foundry reports the outcome
+  const detach = message.type === "ddb-import" && ["class", "adventure"].includes(message.payload?.type);
+  sendToFoundry(message.type, message.payload, detach)
     .then(sendResponse)
     .catch((error) => sendResponse({ success: false, message: String(error?.message ?? error) }));
   return true;

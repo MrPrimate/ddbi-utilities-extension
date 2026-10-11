@@ -34,11 +34,12 @@ module's existing behaviour, the same as when you paste the cookie by hand. See 
 
 ### D&D Beyond page content
 
-- **Monster, spell, feat, species, equipment, magic item, background and class pages.** When you
-  open the popup on one, the extension reads the entry's id (from the page address) and name, and
-  on monster pages the biography text. They are sent only when you press **Import/reimport** or
-  **Send biography**, and only to DDB Importer in your connected Foundry tab, which imports the
-  entry into your Foundry world.
+- **Monster, spell, feat, species, equipment, magic item, background, class and book pages.** When
+  you open the popup on one, the extension reads the entry's id or book (from the page address) and
+  name, and on monster pages the biography text. They are sent only when you press **Add to
+  Foundry** or **Send biography**, and only to DDB Importer in your connected Foundry tab, which adds
+  the entry to your Foundry world. For class pages, the list of subclasses to choose from comes from
+  DDB Importer.
 - **Character sheets.** On D&D Beyond character sheet pages, the extension watches the update
   notices the sheet itself already receives from D&D Beyond, and the sheet's own saves, to decide
   when to reload the sheet. Nothing is stored or sent anywhere.

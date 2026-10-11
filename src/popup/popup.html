@@ -46,6 +46,33 @@
         margin: 12px 0 6px;
         font-size: 13px;
       }
+      body.wide {
+        width: 340px;
+      }
+      .checklist {
+        margin: 4px 0 8px;
+        padding: 0;
+        list-style: none;
+        max-height: 180px;
+        overflow-y: auto;
+      }
+      .checklist li label {
+        display: flex;
+        gap: 6px;
+        align-items: flex-start;
+        margin: 2px 0;
+      }
+      .checklist .source-name {
+        opacity: 0.7;
+        font-size: 11px;
+      }
+      .links {
+        font-weight: normal;
+        font-size: 11px;
+      }
+      #cancel-class {
+        margin-top: 4px;
+      }
       #connected-sites {
         margin: 6px 0 0;
         padding: 0;
@@ -72,11 +99,19 @@
     <p id="status" role="status"></p>
     <section id="page-import" hidden>
       <h2 id="page-import-name">D&amp;D Beyond entry</h2>
-      <button id="import-entry" type="button">Import/reimport</button>
+      <button id="import-entry" type="button" disabled>Add to Foundry</button>
       <p class="hint" id="import-entry-hint"></p>
-      <button id="send-biography" type="button" hidden>Send biography</button>
-      <p class="hint" id="send-biography-hint" hidden>Reimports it with this page's biography and lair text, replacing D&amp;D Beyond's.</p>
+      <button id="send-biography" type="button" hidden disabled>Send biography</button>
+      <p class="hint" id="send-biography-hint" hidden>Adds or updates it with this page's biography and lair text, replacing D&amp;D Beyond's.</p>
       <p id="page-import-status" role="status"></p>
+      <div id="subclass-picker" hidden>
+        <h2>Source books</h2>
+        <ul class="checklist" id="subclass-sources"></ul>
+        <h2>Subclasses <span class="links"><a href="#" id="subclass-all">all</a> / <a href="#" id="subclass-none">none</a></span></h2>
+        <ul class="checklist" id="subclass-list"></ul>
+        <button id="import-class" type="button" disabled>Add to Foundry</button>
+        <button id="cancel-class" type="button">Cancel</button>
+      </div>
     </section>
     <section id="foundry" hidden>
       <h2>Foundry sites</h2>

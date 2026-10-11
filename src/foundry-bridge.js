@@ -45,13 +45,13 @@
     if (!request) return;
     if (data.type === "ddbi-request-ack") {
       if (request.detach) {
-        request.finish({ success: true, message: "Started in Foundry. DDB Importer shows there when it is done." });
+        request.finish({ success: true, message: "Started in Foundry. DDB Importer shows its progress there." });
         return;
       }
       clearTimeout(request.timer);
       request.timer = setTimeout(() => request.finish({ success: false, message: "DDB Importer did not finish in time." }), RESULT_TIMEOUT_MS);
     } else if (data.type === "ddbi-request-result") {
-      request.finish({ success: Boolean(data.success), message: String(data.message ?? "") });
+      request.finish({ success: Boolean(data.success), message: String(data.message ?? ""), data: data.data });
     }
   });
 
