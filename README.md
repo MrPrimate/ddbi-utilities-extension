@@ -2,6 +2,9 @@
 
 Browser helpers for D&D Beyond, for use alongside the DDB Importer Foundry VTT module.
 
+Unofficial: this extension is not affiliated with, endorsed by, or sponsored by D&D Beyond or
+Wizards of the Coast. See [PRIVACY.md](PRIVACY.md) for what it does with your data.
+
 ## Features
 
 ### Share your D&D Beyond login with DDB Importer
@@ -85,8 +88,10 @@ Limits:
 
 ## Permissions
 
-- `cookies` and access to `dndbeyond.com`: read the `CobaltSession` cookie and notice login changes.
-- `clipboardWrite`: put the cookie on the clipboard for the copy button.
+- `cookies` and access to `dndbeyond.com` and `www.dndbeyond.com`: read the `CobaltSession` cookie
+  and notice login changes (the cookie is set on `.dndbeyond.com`, whose change events need the bare
+  domain).
+- The copy button writes to the clipboard from your click, which needs no permission.
 - `scripting`, `activeTab` and optional access to other sites: connect a Foundry site. Access is
   requested per site when you press Connect, never up front.
 - The popup reads the monster and its biography from the open monster page with `scripting`,

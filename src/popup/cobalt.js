@@ -6,7 +6,8 @@
  */
 (() => {
   const COOKIE = { name: "CobaltSession", domain: ".dndbeyond.com" };
-  const ORIGINS = ["https://dndbeyond.com/*", "https://*.dndbeyond.com/*"];
+  // the bare domain is needed for the .dndbeyond.com cookie's change events, www for reading it
+  const ORIGINS = ["https://dndbeyond.com/*", "https://www.dndbeyond.com/*"];
 
   /**
    * The CobaltSession cookie value, or null when the browser holds none (not logged in).
