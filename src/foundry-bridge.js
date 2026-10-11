@@ -44,6 +44,10 @@
     const request = requests.get(data.requestId);
     if (!request) return;
     if (data.type === "ddbi-request-ack") {
+      if (request.detach) {
+        request.finish({ success: true, message: "Started in Foundry. DDB Importer shows there when it is done." });
+        return;
+      }
       clearTimeout(request.timer);
       request.timer = setTimeout(() => request.finish({ success: false, message: "DDB Importer did not finish in time." }), RESULT_TIMEOUT_MS);
     } else if (data.type === "ddbi-request-result") {
@@ -51,10 +55,11 @@
     }
   });
 
-  function relayRequest(request, payload) {
+  function relayRequest(request, payload, detach) {
     return new Promise((resolve) => {
       const requestId = `ext-${nextRequestId++}`;
       const entry = {
+        detach,
         // no acknowledgement means no module here to handle it: answer null so other tabs are tried
         timer: setTimeout(() => entry.finish(null), ACK_TIMEOUT_MS),
         finish: (result) => {
@@ -74,7 +79,7 @@
       return false;
     }
     if (message?.type === "extension-request") {
-      relayRequest(message.request, message.payload).then(sendResponse);
+      relayRequest(message.request, message.payload, Boolean(message.detach)).then(sendResponse);
       return true;
     }
     return false;

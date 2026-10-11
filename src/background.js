@@ -32,9 +32,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 /**
  * Sends a request from a D&D Beyond page to DDB Importer in a connected Foundry tab. Tabs whose
  * module does not acknowledge it (no world open, an older module) are skipped; the first success
- * wins, otherwise the first failure message is returned.
+ * wins, otherwise the first failure message is returned. With `detach`, a tab that accepts the
+ * request answers at once and the outcome is only shown in Foundry.
  */
-async function sendToFoundry(request, payload) {
+async function sendToFoundry(request, payload, detach = false) {
   const sites = await globalThis.DDBIFoundrySites.connectedSites(chrome.scripting);
   if (!sites.length) {
     return { success: false, message: "Connect your Foundry site in the DDBI Utilities popup first." };
@@ -43,7 +44,7 @@ async function sendToFoundry(request, payload) {
   if (!tabs.length) return { success: false, message: "Open your connected Foundry world in a tab first." };
   const failures = [];
   for (const tab of tabs) {
-    const result = await chrome.tabs.sendMessage(tab.id, { type: "extension-request", request, payload }).catch(() => null);
+    const result = await chrome.tabs.sendMessage(tab.id, { type: "extension-request", request, payload, detach }).catch(() => null);
     if (!result) continue;
     if (result.success) return result;
     failures.push(result.message);
@@ -55,13 +56,15 @@ async function sendToFoundry(request, payload) {
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message?.type !== "monster-import") return false;
+  if (message?.type !== "ddb-import") return false;
   // only the extension's own popup sends this; content scripts in web pages have a sender.tab
   if (sender.id !== chrome.runtime.id || sender.tab) {
     sendResponse({ success: false, message: "Not sent from the extension popup." });
     return false;
   }
-  sendToFoundry("monster-import", message.payload)
+  // a class import runs for minutes, longer than this worker may stay alive waiting for it, so
+  // only wait for DDB Importer to accept it; Foundry reports the outcome
+  sendToFoundry("ddb-import", message.payload, message.payload?.type === "class")
     .then(sendResponse)
     .catch((error) => sendResponse({ success: false, message: String(error?.message ?? error) }));
   return true;

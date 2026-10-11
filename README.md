@@ -28,21 +28,25 @@ The cookie goes from the extension to the Foundry page in your browser and nowhe
 is involved. The extension sends it only when DDB Importer asks, and only to a connected site; a
 login change is announced without it.
 
-### Import a monster from its D&D Beyond page
+### Import from a D&D Beyond page
 
-Open the extension's toolbar popup on a D&D Beyond monster page. With your Foundry world open as a
-GM in a connected tab:
+Open the extension's toolbar popup on a D&D Beyond monster, spell, feat, species, equipment, magic
+item, background or class page. With your Foundry world open as a GM in a connected tab, press
+**Import/reimport <name>** to import that entry into DDB Importer's compendiums, or reimport it if it
+is already there. The id comes from the page URL.
 
-- **Import/reimport <monster>** imports the monster into DDB Importer's monster compendium, or
-  reimports it if it is already there.
-- **Send biography** (only on pages with a biography) reimports it with the page's biography and
-  lair text, replacing D&D Beyond's.
+- Feats, backgrounds, species and classes are imported through the Muncher's mule character, so set
+  its URL in the Muncher first. A class import brings the class and the subclasses D&D Beyond offers
+  from its book, and takes a few minutes: the popup only confirms it started, and Foundry shows when
+  it is done.
+- Monsters: some, many 2024 Monster Manual entries among them, have no biography or lair text in the
+  data DDB Importer imports, although their page shows it. Import/reimport adds the page's text
+  wherever D&D Beyond's data has none; **Send biography** (only on pages with a biography)
+  reimports it with the page's biography and lair text, replacing D&D Beyond's. Either way the lair
+  section is parsed into lair features.
 
-Some monsters, many 2024 Monster Manual entries among them, have no biography or lair text in the
-data DDB Importer imports, although their page shows it. Import/reimport adds the page's text
-wherever D&D Beyond's data has none. Either way the lair section is parsed into lair features. The
-result is shown in the popup; if you close the popup first, the import still finishes and Foundry
-shows the outcome.
+The result is shown in the popup; if you close the popup first, the import still finishes and
+Foundry shows the outcome.
 
 ### Copy Cobalt cookie
 
@@ -94,8 +98,8 @@ Limits:
 - The copy button writes to the clipboard from your click, which needs no permission.
 - `scripting`, `activeTab` and optional access to other sites: connect a Foundry site. Access is
   requested per site when you press Connect, never up front.
-- The popup reads the monster and its biography from the open monster page with `scripting`,
-  under the dndbeyond.com access above.
+- The popup reads the entry's name (and a monster's biography) from the open D&D Beyond page with
+  `scripting`, under the dndbeyond.com access above.
 - The sheet refresh content script needs no permissions of its own.
 
 ## Install (unpacked)
@@ -114,11 +118,11 @@ Content-script features live in `src/` (one script per feature, listed in `manif
 toolbar popup lives in `src/popup/`. Login sharing is `src/background.js` (cookie access, gated on
 connected sites), `src/foundry-bridge.js` (registered per connected site, relays
 `window.postMessage` traffic with the module) and `src/foundry-sites.js` (shared helpers); the
-module side is `src/lib/UtilitiesExtension.ts` in ddb-importer. Monster imports go from the popup
-(`src/popup/monster.js`, which reads the page with `scripting.executeScript`) through the
-background worker and the bridge as an `extension-request` named `monster-import` (the module
-acknowledges within 3 seconds, then answers with the result); the module side is
-`src/muncher/MonsterPageImport.ts`. Tests are in `test/<feature>.test.js`. Pushing to `main`
+module side is `src/lib/UtilitiesExtension.ts` in ddb-importer. Page imports go from the popup
+(`src/popup/page-import.js`, which reads the page with `scripting.executeScript`) through the
+background worker and the bridge as an `extension-request` named `ddb-import` (the module
+acknowledges within 3 seconds, then answers with the result; class imports return on the
+acknowledgement); the module side is `src/muncher/PageImport.ts`. Tests are in `test/<feature>.test.js`. Pushing to `main`
 runs the tests and publishes a release zip tagged with the `manifest.json` version.
 
 ```bash

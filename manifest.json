@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "DDBI Utilities Extension",
   "version": "0.1.0",
-  "description": "Companion for the DDB Importer Foundry VTT module: shares your D&D Beyond login with it, imports monster pages, refreshes sheets.",
+  "description": "Companion for the DDB Importer Foundry VTT module: shares your D&D Beyond login with it, imports D&D Beyond pages, refreshes sheets.",
   "homepage_url": "https://github.com/MrPrimate/ddbi-utilities-extension",
   "minimum_chrome_version": "111",
   "icons": {

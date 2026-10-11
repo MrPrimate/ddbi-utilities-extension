@@ -1,6 +1,6 @@
 # DDBI Utilities Extension privacy policy
 
-Effective 10 October 2026.
+Effective 11 October 2026.
 
 DDBI Utilities Extension ("the extension") is an unofficial companion for the DDB Importer module
 for Foundry Virtual Tabletop. It is not affiliated with D&D Beyond or Wizards of the Coast.
@@ -34,10 +34,11 @@ module's existing behaviour, the same as when you paste the cookie by hand. See 
 
 ### D&D Beyond page content
 
-- **Monster pages.** When you open the popup on a D&D Beyond monster page, the extension reads that
-  page's monster id, name and biography text. They are sent only when you press **Import/reimport**
-  or **Send biography**, and only to DDB Importer in your connected Foundry tab, which imports the
-  monster into your Foundry world.
+- **Monster, spell, feat, species, equipment, magic item, background and class pages.** When you
+  open the popup on one, the extension reads the entry's id (from the page address) and name, and
+  on monster pages the biography text. They are sent only when you press **Import/reimport** or
+  **Send biography**, and only to DDB Importer in your connected Foundry tab, which imports the
+  entry into your Foundry world.
 - **Character sheets.** On D&D Beyond character sheet pages, the extension watches the update
   notices the sheet itself already receives from D&D Beyond, and the sheet's own saves, to decide
   when to reload the sheet. Nothing is stored or sent anywhere.
@@ -45,7 +46,7 @@ module's existing behaviour, the same as when you paste the cookie by hand. See 
 ### Tab addresses
 
 When you open the popup, the extension looks at the address of the current tab to see whether it
-is a D&D Beyond monster page or a Foundry site you could connect. It does not keep or send it.
+is a D&D Beyond page it can import or a Foundry site you could connect. It does not keep or send it.
 
 ## What the extension stores
 

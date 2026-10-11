@@ -30,11 +30,11 @@
       #foundry-status[data-kind="error"] {
         color: #b42318;
       }
-      #monster-status[data-kind="error"] {
+      #page-import-status[data-kind="error"] {
         color: #b42318;
       }
       #foundry-status[data-kind="ok"],
-      #monster-status[data-kind="ok"] {
+      #page-import-status[data-kind="ok"] {
         color: #1a7f37;
       }
       .hint {
@@ -70,13 +70,13 @@
     <h1>DDBI Utilities</h1>
     <button id="copy-cobalt" type="button">Copy Cobalt Cookie</button>
     <p id="status" role="status"></p>
-    <section id="monster" hidden>
-      <h2 id="monster-name">Monster</h2>
-      <button id="import-monster" type="button">Import/reimport monster</button>
-      <p class="hint">Imports this monster into your Foundry monster compendium, or reimports it, adding this page's biography and lair text where D&amp;D Beyond's data has none.</p>
+    <section id="page-import" hidden>
+      <h2 id="page-import-name">D&amp;D Beyond entry</h2>
+      <button id="import-entry" type="button">Import/reimport</button>
+      <p class="hint" id="import-entry-hint"></p>
       <button id="send-biography" type="button" hidden>Send biography</button>
       <p class="hint" id="send-biography-hint" hidden>Reimports it with this page's biography and lair text, replacing D&amp;D Beyond's.</p>
-      <p id="monster-status" role="status"></p>
+      <p id="page-import-status" role="status"></p>
     </section>
     <section id="foundry" hidden>
       <h2>Foundry sites</h2>
@@ -88,6 +88,6 @@
     <script src="cobalt.js"></script>
     <script src="../foundry-sites.js"></script>
     <script src="connect.js"></script>
-    <script src="monster.js"></script>
+    <script src="page-import.js"></script>
   </body>
 </html>
